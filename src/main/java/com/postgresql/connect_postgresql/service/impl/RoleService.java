@@ -19,6 +19,11 @@ public class RoleService implements IRoleService<RoleDto> {
     }
 
     @Override
+    public List<RoleDto> findAll(Integer limit) {
+        return null;
+    }
+
+    @Override
     public RoleDto createOrUpdate(RoleDto dto) {
         return null;
     }

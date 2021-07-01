@@ -7,6 +7,8 @@ public interface GenericeService<T> {
 
     List<T> findAll();
 
+    List<T> findAll(Integer limit);
+
     T createOrUpdate(T dto);
 
     Boolean delete(Long[] id);
