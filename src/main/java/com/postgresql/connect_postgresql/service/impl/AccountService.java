@@ -4,6 +4,7 @@ import com.postgresql.connect_postgresql.converter.AccountConverter;
 import com.postgresql.connect_postgresql.dto.AccountDto;
 import com.postgresql.connect_postgresql.entities.AccountEntity;
 import com.postgresql.connect_postgresql.entities.RoleEntity;
+import com.postgresql.connect_postgresql.exception.NotFoundException;
 import com.postgresql.connect_postgresql.repositories.AccountRepos;
 import com.postgresql.connect_postgresql.repositories.RoleRepos;
 import com.postgresql.connect_postgresql.service.IAccountService;
@@ -32,8 +33,8 @@ public class AccountService implements IAccountService<AccountDto> {
     @Override
     public AccountDto findOne(Long id) {
         Optional<AccountEntity> accountEntity = accountRepos.findById(id);
-        if (accountEntity.isPresent()) return accountConverter.toDto(accountEntity.get());
-        return null;
+        if (accountEntity.isPresent() ) return accountConverter.toDto(accountEntity.get());
+        throw new NotFoundException("Account not exist in system");
     }
 
     @Override
@@ -84,8 +85,7 @@ public class AccountService implements IAccountService<AccountDto> {
                 accountRepos.delete(accountRepos.findById(id).get());
             });
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return false;
+            throw new NotFoundException("Account not exist in system");
         }
         return true;
     }

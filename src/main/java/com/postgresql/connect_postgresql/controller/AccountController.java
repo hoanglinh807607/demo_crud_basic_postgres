@@ -1,12 +1,20 @@
 package com.postgresql.connect_postgresql.controller;
 
 import com.postgresql.connect_postgresql.dto.AccountDto;
+import com.postgresql.connect_postgresql.exception.ErrorRespone;
+import com.postgresql.connect_postgresql.exception.NotFoundException;
 import com.postgresql.connect_postgresql.service.impl.AccountService;
+import com.sun.jdi.request.InvalidRequestStateException;
+import javassist.tools.web.BadHttpRequest;
+import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.Valid;
 
@@ -33,33 +41,19 @@ public class AccountController {
     }
 
     @PostMapping("/account")
-    public ResponseEntity<?> create(@RequestBody @Valid AccountDto account) {
+    public ResponseEntity<?> create(@RequestBody @Valid AccountDto account) throws BindException {
         return ResponseEntity.ok(accountService.createOrUpdate(account));
     }
 
     @PutMapping("/account")
-    public ResponseEntity<?> update(@RequestBody @Valid AccountDto accountDto) {
+    public ResponseEntity<?> update(@RequestBody @Valid AccountDto accountDto) throws BindException  {
         return ResponseEntity.ok(accountService.createOrUpdate(accountDto));
     }
 
     @DeleteMapping("/account")
     public ResponseEntity<?> delete(@RequestBody AccountDto accountDto) {
         Boolean success = accountService.delete(accountDto.getIds());
-        String result = "Fail delete";
-        if (success) result = "Success delete";
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok("Success delete");
     }
-
-    @ExceptionHandler(BindException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)  // Nếu validate fail thì trả về 400
-    @ResponseBody
-    public String handleBindException(BindException e) {
-        // Trả về message của lỗi đầu tiên
-        String errorMessage = "Request không hợp lệ";
-        if (e.getBindingResult().hasErrors())
-            errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        return errorMessage;
-    }
-
 
 }
